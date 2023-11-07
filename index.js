@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-require(dotenv).config();
+require('dotenv').config();
 
 async function getTickerprice(symbol) {
     try {
@@ -52,11 +52,11 @@ async function makeTrade(symbol, price, action, quantity) {
     }
 }
 
-((async) => {
+(async() => {
     const symbol = 'SHIBA';
-    const price = getTickerprice(symbol);
+    const price = await getTickerprice(symbol);
     const action = 'BUY'
     const quantity = Math.round(1/price);
-    const transaction = makeTrade(symbol,price,action,quantity);
+    const transaction =await makeTrade(symbol,price,action,quantity);
     console.log(transaction);
 })();
