@@ -33,7 +33,7 @@ async function makeTrade(symbol, price, action, quantity) {
       timeInForce: "GTC",
     };
 
-    const queryString = Object.keys(params)
+    let queryString = Object.keys(params)
       .map((key) => `${key} = ${encodeURIComponent(params[key])}`)
       .join("&");
     const signature = crypto
@@ -51,6 +51,7 @@ async function makeTrade(symbol, price, action, quantity) {
         "Content-type": "application/x-www-form-urlencoded",
       },
     });
+    console.log(request)
     const response = await request.json();
     return response;
   } catch (error) {
