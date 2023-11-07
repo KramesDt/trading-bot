@@ -14,7 +14,7 @@ async function getTickerprice(symbol) {
 
 async function makeTrade(symbol, price, action, quantity) {
     try {
-        const apiKey = process.env.BIBANCE_API_KEY;
+        const apiKey = process.env.BINANCE_API_KEY;
         const apiSecret = process.env.BINANCE_API_SECRET
         const endpoint = 'https://api.binance.com/v3/ticker/order';
         const timestamp = Date.now();
@@ -33,7 +33,7 @@ async function makeTrade(symbol, price, action, quantity) {
         .update(queryString)
         .digest('hex');
 
-        queryString+='&signature'+signature;
+        queryString+='&signature='+signature;
         const url = endpoint+'?'+queryString;
         
         const request = await fetch(url, {
