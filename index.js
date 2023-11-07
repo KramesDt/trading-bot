@@ -27,7 +27,11 @@ async function makeTrade(symbol, price, action, quantity) {
         };
 
         const queryString = Object.keys(params).map(key => `${key} = ${encodeURIComponent(params[key])}`).join('&');
-        
+        const signature = crypto.createHmac('sha256', apiSecret)
+        .update(queryString)
+        .digest('hex');
+
+        qu
 
     } catch (error) {
         console.log("Error", error);
