@@ -25,12 +25,14 @@ async function makeTrade(symbol, price, action, quantity) {
           timestamp,
           timeInForce: "GTC",
         };
+
+        const queryString = Object.keys(params).map(key => `${key} = ${encodeURIComponent(params[key])}`).join('&');
+        
+
     } catch (error) {
         console.log("Error", error);
         throw error;
     }
-
-
 }
 
 ((async) => {
