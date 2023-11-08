@@ -1,6 +1,8 @@
 const crypto = require("crypto");
 require("dotenv").config();
 
+
+//Fetch price of specified symbol
 async function getTickerprice(symbol) {
   try {
     const priceFetch = await fetch(
@@ -17,11 +19,13 @@ async function getTickerprice(symbol) {
   }
 }
 
+//SPOT Trade
+//Make trade based on the available params
 async function makeTrade(symbol, price, action, quantity) {
   try {
     const apiKey = process.env.BINANCE_API_KEY;
     const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = "https://api.binance.com/v3/ticker/order";
+    const endpoint = "https://api.binance.com/api/v3/sor/order";
     const timestamp = Date.now();
     const params = {
       symbol,
@@ -33,17 +37,16 @@ async function makeTrade(symbol, price, action, quantity) {
       timeInForce: "GTC",
     };
 
-    let queryString = Object.keys(params)
-      .map((key) => `${key} = ${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac("sha256", apiSecret)
+    //create query string to be appended to the URL
+    let queryString = Object.keys(params).map((key) => `${key}=${encodeURIComponent(params[key])}`).join("&");
+    const signature = crypto.createHmac("sha256", apiSecret)
       .update(queryString)
       .digest("hex");
 
     queryString += "&signature=" + signature;
     const url = endpoint + "?" + queryString;
 
+    //
     const request = await fetch(url, {
       method: "POST",
       headers: {
@@ -51,14 +54,18 @@ async function makeTrade(symbol, price, action, quantity) {
         "Content-type": "application/x-www-form-urlencoded",
       },
     });
-    console.log(request)
+    console.log(url);
+
     const response = await request.json();
     return response;
+
   } catch (error) {
     console.log("Error", error);
     throw error;
   }
 }
+
+//Create futures trade
 
 (async () => {
   const symbol = "BTCUSDT";
