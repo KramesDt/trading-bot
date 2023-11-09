@@ -67,25 +67,12 @@ async function makeTrade(symbol, price, action, quantity) {
   }
 }
 
-// //Create futures trade
-
-// async function futuresTrade(symbol, {side:action}, quantity, price) {
-//   const client = new Binance({
-//     apiKey: process.env.BINANCE_API_KEY,
-//     apiSecret: process.env.BINANCE_API_SECRET,
-//   });
-
-//   client
-//     .futuresOrder(symbol, { side: action }, quantity, price)
-//     .then((order) => {
-//       console.log("Created new order: ", order);
-//     })
-//     .catch((error) => {
-//       console.log("Error: ", error);
-//       throw error;
-//     });
-
-// }
+async function deleteSpotTrade(symbol, orderId){
+    const apiKey = process.env.BINANCE_API_KEY;
+    const apiSecret = process.env.BINANCE_API_SECRET;
+    const endpoint = `https://api.binance.com/api/v3/sor/order/`;
+    const timestamp = Date.now();
+}
 
 
 

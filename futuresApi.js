@@ -2,47 +2,53 @@ require("dotenv").config();
 const crypto = require("crypto");
 const { create } = require("domain");
 
+const utility = require('./util')
+
 //futures order
 //can be a LIMIT or MARKET order depending on specified "type" in params
 //can be a BUY or SELL order depending on specified "side" in params
-async function futuresOrder(symbol, side, quantity, price) {
+async function futuresOrder(symbol, action, quantity, price) {
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = "https://api.binance.com/fapi/v1/order";
-
+    const type = "";
     const timestamp = Date.now();
-    const params = {
-      symbol,
-      side: action,
-      type,
-      quantity,
-      price,
-      timestamp,
-      timeInForce: "GTC",
-    };
-
-    const queryString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac(sha256, apiSecret)
-      .update(queryString)
-      .digest("hex");
-    queryString += "&sinature" + signature;
-
-    const url = endpoint + "?" + queryString;
-
-    const request = await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-MBX-APIHEY": apiKey,
-        "Content-type": "application/x-www-form-urlencoded",
-      },
+    utility("https://api.binance.com/fapi/v1/order", "POST", {
+        symbol,
+        side: action,
+        type,
+        quantity,
+        price,
+        timestamp,
+        timeInForce: "GTC",
     });
+  } catch (error) {
+    console.log(error, ":error");
+    throw error;
+  }
+}
 
-    const response = request.json();
-    return response;
+async function deleteFuturesOrder(symbol, orderId){
+  try {
+    const type = "";
+    const timestamp = Date.now();
+    utility("https://api.binance.com/fapi/v1/order", "DELETE", {
+      symbol,
+      orderId,
+      timestamp,
+    });
+  } catch (error) {
+    console.log(error, ":error");
+    throw error;
+  }
+}
+
+async function deleteAllFuturesOrder(symbol) {
+  try {
+    const type = "";
+    const timestamp = Date.now();
+    utility("https://api.binance.com/fapi/v1/order","DELETE", {
+      symbol,
+      timestamp,
+    });
   } catch (error) {
     console.log(error, ":error");
     throw error;
@@ -55,6 +61,9 @@ async function futuresOrder(symbol, side, quantity, price) {
   const price = "0.000001";
   const action = "BUY";
   const quantity = Math.round(1 / price);
-  const transaction = await futuresOrder(symbol, side, quantity, price);
+  const transaction = await futuresOrder(symbol, action, quantity, price);
+  const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
+  const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
+
   console.log(transaction);
 })();
