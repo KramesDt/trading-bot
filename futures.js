@@ -77,7 +77,7 @@ const order = {
 const orders = [
   {
     symbol: "BTCUSDT",
-    side: "BUY",
+    side: "BUY",   
     type: "MARKET",
     quantity: "0.01",
   },
