@@ -12,7 +12,7 @@ async function getTickerprice(symbol) {
     );
     const priceBody = await priceFetch.json();
     const ticPrice = parseFloat(priceBody.price);
-    console.log(ticPrice);
+    // console.log(ticPrice);
 
     return ticPrice;
   } catch (error) {
@@ -36,12 +36,15 @@ async function makeTrade(symbol, price, action, quantity) {
       quantity,
       price,
       timestamp,
-      timeInForce: "GTC",
+      timeInForce: "GTC"
     };
 
     //create query string to be appended to the URL
-    let queryString = Object.keys(params).map((key) => `${key}=${encodeURIComponent(params[key])}`).join("&");
-    const signature = crypto.createHmac("sha256", apiSecret)
+    let queryString = Object.keys(params)
+      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      .join("&");
+    const signature = crypto
+      .createHmac("sha256", apiSecret)
       .update(queryString)
       .digest("hex");
 
@@ -57,12 +60,11 @@ async function makeTrade(symbol, price, action, quantity) {
       },
     });
     console.log(url);
-
     const response = await request.json();
+    // console.log(response);
     return response;
-
   } catch (error) {
-    console.log("Error", error);
+    // console.log("Error", error);
     throw error;
   }
 }
@@ -100,7 +102,7 @@ async function deleteSpotTrade(symbol, orderId){
           "Content-type": "application/x-www-form-urlencoded",
         },
       });
-      console.log(url);
+      // console.log(url);
 
       const response = await request.json();
       return response;
@@ -142,7 +144,7 @@ async function deleteAllSpotTrade(symbol) {
         "Content-type": "application/x-www-form-urlencoded",
       },
     });
-    console.log(url);
+    // console.log(url);
 
     const response = await request.json();
     return response;
@@ -163,3 +165,10 @@ async function deleteAllSpotTrade(symbol) {
   // console.log(futuresTransaction);
 
 })();
+
+module.exports = {
+  getTickerprice,
+  makeTrade,
+  deleteSpotTrade,
+  deleteAllSpotTrade,
+};
