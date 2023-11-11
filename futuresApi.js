@@ -1,7 +1,4 @@
 require("dotenv").config();
-const crypto = require("crypto");
-const { create } = require("domain");
-
 const utility = require('./util')
 
 //futures order
@@ -9,9 +6,9 @@ const utility = require('./util')
 //can be a BUY or SELL order depending on specified "side" in params
 async function futuresOrder(symbol, action, quantity, price) {
   try {
-    const type = "";
+    const type = "LIMIT";
     const timestamp = Date.now();
-    utility("https://api.binance.com/fapi/v1/order", "POST", {
+    return await utility("https://api.binance.com/fapi/v1/order", "POST", {
         symbol,
         side: action,
         type,
@@ -30,7 +27,7 @@ async function deleteFuturesOrder(symbol, orderId){
   try {
     const type = "";
     const timestamp = Date.now();
-    utility("https://api.binance.com/fapi/v1/order", "DELETE", {
+    return await utility("https://api.binance.com/fapi/v1/order", "DELETE", {
       symbol,
       orderId,
       timestamp,
@@ -45,7 +42,7 @@ async function deleteAllFuturesOrder(symbol) {
   try {
     const type = "";
     const timestamp = Date.now();
-    utility("https://api.binance.com/fapi/v1/order","DELETE", {
+    return await utility("https://api.binance.com/fapi/v1/order","DELETE", {
       symbol,
       timestamp,
     });
@@ -60,10 +57,18 @@ async function deleteAllFuturesOrder(symbol) {
   const type = "LIMIT";
   const price = "0.000001";
   const action = "BUY";
+  const orderId = "7385677";
   const quantity = Math.round(1 / price);
   const transaction = await futuresOrder(symbol, action, quantity, price);
-  const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
-  const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
+  // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
+  // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
 
-  console.log(transaction);
+  console.log("response is:", transaction);
 })();
+
+
+module.exports = {
+  futuresOrder,
+  deleteFuturesOrder,
+  deleteAllFuturesOrder
+}
