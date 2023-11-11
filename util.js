@@ -18,14 +18,16 @@ const crypto = require("node:crypto");
         .digest("hex");
     queryString += "&signature=" + signature;
     const url = endpoint + "?" + queryString;
-
+    console.log(url)
     const request = await fetch(url, {
         method: verb,
         headers: {
             "X-MBX-APIKEY": apiKey,
             "Content-type": "application/x-www-form-urlencoded",
         },
-    });
+    }
+    
+    );
 
     const response = await request.json();
     return response;

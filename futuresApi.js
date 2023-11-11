@@ -6,7 +6,7 @@ const utility = require('./util')
 //can be a BUY or SELL order depending on specified "side" in params
 async function futuresOrder(symbol, action, quantity, price) {
   try {
-    const type = "";
+    const type = "LIMIT";
     const timestamp = Date.now();
     return await utility("https://api.binance.com/fapi/v1/order", "POST", {
         symbol,
@@ -65,3 +65,10 @@ async function deleteAllFuturesOrder(symbol) {
 
   console.log("response is:", transaction);
 })();
+
+
+module.exports = {
+  futuresOrder,
+  deleteFuturesOrder,
+  deleteAllFuturesOrder
+}
