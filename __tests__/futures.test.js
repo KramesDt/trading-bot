@@ -1,5 +1,6 @@
 const {
     futuresOrder,
+    checkFuturesBalance,
     deleteFuturesOrder,
     deleteAllFuturesOrder
 } = require('../futuresApi');
@@ -18,6 +19,13 @@ describe("Binance Futures Trading Functions", () => {
 
   });
 
+  test("should check futures balance", async () => {
+    const timestamp = Date.now();
+
+    const transaction = await deleteAllFuturesOrder();
+    expect(transaction).toHaveProperty({ success: true });
+  });
+
   test("should delete a futures order", async () => {
     const symbol = "MBLUSDT";
     const orderId = 27823873;
@@ -30,7 +38,6 @@ describe("Binance Futures Trading Functions", () => {
 
   test("should delete all futures order", async () => {
     const symbol = "MBLUSDT";
-    const orderId = 27823873;
 
     const transaction = await deleteAllFuturesOrder(symbol);
     expect(transaction).toHaveProperty({ success: true });

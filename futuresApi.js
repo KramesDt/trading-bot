@@ -23,6 +23,20 @@ async function futuresOrder(symbol, action, quantity, price) {
   }
 }
 
+//Check balance
+async function checkFuturesBalance() {
+  try {
+    const type = "";
+    const timestamp = Date.now();
+    return await utility("https://api.binance.com/fapi/v2/balance", "GET", {
+      timestamp,
+    });
+  } catch (error) {
+    console.log(error, ":error");
+    throw error;
+  }
+}
+
 async function deleteFuturesOrder(symbol, orderId){
   try {
     const type = "";
@@ -69,6 +83,7 @@ async function deleteAllFuturesOrder(symbol) {
 
 module.exports = {
   futuresOrder,
+  checkFuturesBalance,
   deleteFuturesOrder,
   deleteAllFuturesOrder
 }
