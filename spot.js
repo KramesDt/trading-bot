@@ -12,7 +12,7 @@ async function getTickerprice(symbol) {
     );
     const priceBody = await priceFetch.json();
     const ticPrice = parseFloat(priceBody.price);
-    console.log(ticPrice);
+    // console.log(ticPrice);
 
     return ticPrice;
   } catch (error) {
@@ -32,11 +32,12 @@ async function makeTrade(symbol, price, action, quantity) {
     const params = {
       symbol,
       side: action,
-      type: "LIMIT",
+      type: "LIMIT", //for market orders "price"and "timeInForce" params are not needed
       quantity,
       price,
       timestamp,
-      timeInForce: "GTC"
+      timeInForce: "GTC",
+      recvWindow: 10000
     };
 
     //create query string to be appended to the URL
@@ -59,7 +60,7 @@ async function makeTrade(symbol, price, action, quantity) {
         "Content-type": "application/x-www-form-urlencoded",
       },
     });
-    console.log(url);
+    // console.log(url);
     const response = await request.json();
     // console.log(response);
     return response;
@@ -97,7 +98,7 @@ async function checkBalance() {
     //Balance for a single coin
     //assign symbol variable to the queried coin 
     const coinBalance = response.balances.find((balance) => balance.asset === symbol);
-    console.log(coinBalance)
+    // console.log(coinBalance)
 
     //All Balances
     return response.balances;
@@ -105,6 +106,39 @@ async function checkBalance() {
       } catch (error) {
         console.log("Error", error);
         throw error;
+  }
+}
+
+async function getAllOrders(symbol) {
+  try {
+    const apiKey = process.env.BINANCE_API_KEY;
+    const apiSecret = process.env.BINANCE_API_SECRET;
+    const endpoint = `https://api.binance.com/api/v3/allOrders`;
+    const timestamp = Date.now();
+
+    const params = {
+      symbol,
+      timestamp
+    }
+
+    let queryString = Object.keys(params).map(key=>`${key}=${encodeURIComponent(params[key])}`).join('&');
+    const signature = crypto.createHmac("sha256", apiSecret).update(queryString).digest('hex');
+    queryString +="&signature="+signature;
+    const url = endpoint+"?"+queryString;
+
+    const request = await fetch(url, {
+      method: "GET",
+      headers: {
+        "X-MBX-APIKEY": apiKey,
+        "Content-type": "application/x-www-form-urlencoded",
+      },
+    });
+
+    const response = request.json()
+    return response
+  } catch (error) {
+    console.log("Error", error);
+    throw error;
   }
 }
 
@@ -194,14 +228,19 @@ async function deleteAllSpotTrade(symbol) {
 }
 
 (async () => {
-  const symbol = "MBLUSDT";
-  const price = await getTickerprice(symbol);
+  const symbol = "TLMUSDT";
+  // const price = await getTickerprice(symbol);
+  const price = 0.09;
   const action = "SELL";
   const quantity = Math.round(1 / price);
   // const balance = await checkBalance();
   // console.log(balance)
+  const allOrders = await getAllOrders(symbol)
+  console.log(allOrders);
   // const transaction = await makeTrade(symbol, price, action, quantity);
   // console.log(transaction);
+  // const deleteOrder = await deleteSpotTrade("TLMUSDT", 7385677);
+  // console.log(deleteOrder);
 })();
 
 module.exports = {
