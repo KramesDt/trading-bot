@@ -9,26 +9,25 @@ const crypto = require("node:crypto");
     const timestamp = Date.now();
     const params = param;
 
-    const queryString = Object.keys(params)
+    let queryString = Object.keys(params)
         .map((key) => `${key}=${encodeURIComponent(params[key])}`)
         .join("&");
     const signature = crypto
-        .createHmac(sha256, apiSecret)
+        .createHmac("sha256", apiSecret)
         .update(queryString)
         .digest("hex");
-    queryString += "&sinature" + signature;
-
+    queryString += "&signature=" + signature;
     const url = endpoint + "?" + queryString;
 
     const request = await fetch(url, {
         method: verb,
         headers: {
-            "X-MBX-APIHEY": apiKey,
+            "X-MBX-APIKEY": apiKey,
             "Content-type": "application/x-www-form-urlencoded",
         },
     });
 
-    const response = request.json();
+    const response = await request.json();
     return response;
 
 }
