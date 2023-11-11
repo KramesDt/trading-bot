@@ -24,7 +24,8 @@ async function futuresOrder(symbol, action, quantity, price) {
 }
 
 //Check balance
-async function checkFuturesBalance() {
+async function checkFuturesBalance(
+) {
   try {
     const type = "";
     const timestamp = Date.now();

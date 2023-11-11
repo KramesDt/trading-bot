@@ -25,16 +25,10 @@ const crypto = require("node:crypto");
             "X-MBX-APIKEY": apiKey,
             "Content-type": "application/x-www-form-urlencoded",
         },
-    }
-    
-    );
-
+    });
     const response = await request.json();
     return response;
-
 }
-
-
 
 module.exports = utility; 
 
