@@ -14,8 +14,26 @@ describe("Binance Futures Trading Functions", () => {
 
     const transaction = await futuresOrder(symbol, price, action, quantity);
     expect(transaction).toHaveProperty("orderId");
-    expect(transaction).toHaveProperty("status", "FILLED");
+    expect(transaction).toHaveProperty({status: "FILLED"});
 
+  });
+
+  test("should delete a futures order", async () => {
+    const symbol = "MBLUSDT";
+    const orderId = 27823873;
+    
+
+    const transaction = await deleteFuturesOrder(symbol, orderId);
+    expect(transaction).toHaveProperty("orderId");
+    expect(transaction).toHaveProperty({status: "CANCELLED"});
+  });
+
+  test("should delete all futures order", async () => {
+    const symbol = "MBLUSDT";
+    const orderId = 27823873;
+
+    const transaction = await deleteAllFuturesOrder(symbol);
+    expect(transaction).toHaveProperty({ success: true });
   });
 
   
