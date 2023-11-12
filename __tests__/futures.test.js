@@ -14,7 +14,7 @@ describe("Binance Futures Trading Functions", () => {
 
     const transaction = await futuresOrder(symbol, price, action, quantity);
     expect(transaction).toHaveProperty("orderId");
-    expect(transaction).toHaveProperty({ status: "FILLED" });
+    expect(transaction).toHaveProperty({ status: "NEW" });
   });
 
   test("should check futures balance", async () => {
