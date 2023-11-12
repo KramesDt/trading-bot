@@ -1,6 +1,4 @@
 require("dotenv").config();
-const crypto = require("node:crypto");
-
 const utility = require('./util')
 
 //futures order
@@ -39,9 +37,21 @@ async function checkFuturesBalance() {
   }
 }
 
+async function getAllFuturesOrders(symbol) {
+  try {
+    const timestamp = Date.now();
+    return utility("https://fapi.binance.com/fapi/v2/orders", "GET", {
+      symbol,
+      timestamp,
+    });
+  } catch (error) {
+    console.log(error, ":error");
+    throw error;
+  }
+}
+
 async function deleteFuturesOrder(symbol, orderId){
   try {
-    const type = "";
     const timestamp = Date.now();
     return await utility("https://fapi.binance.com/fapi/v1/order", "DELETE", {
       symbol,
@@ -68,19 +78,22 @@ async function deleteAllFuturesOrder(symbol) {
 }
 
 (async () => {
-  const symbol = "MBLUSDT";
+  const symbol = "SOLUSDT";
   const type = "LIMIT";
-  const price = "0.000001";
+  const price = 50;
   const action = "BUY";
   const orderId = "7385677";
-  const quantity = Math.round(1 / price);
-  // const transaction = await futuresOrder(symbol, action, quantity, price);
-  const balance = await checkFuturesBalance();
+  const quantity = (.5 / price);
+  const transaction = await futuresOrder(symbol, action, quantity, price);
+  // const balance = await checkFuturesBalance();
+  // const getOrder = await getAllFuturesOrders(symbol);
+
   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
   // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
 
-  // console.log("response is:", transaction);
-  console.log("balance is:", balance);
+  console.log("response is:", transaction);
+  // console.log("balance is:", balance);
+  // console.log("order is: ", getOrder);
 })();
 
 

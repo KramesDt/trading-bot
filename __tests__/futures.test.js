@@ -22,13 +22,13 @@ describe("Binance Futures Trading Functions", () => {
     const expectedResponse = [
       {
         asset: "USDT",
-        walletBalance: "1000",
+        balance: "1000",
         crossWalletBalance: "1000",
         availableBalance: "1000",
       },
       {
         asset: "BTC",
-        walletBalance: "1.5",
+        balance: "1.5",
         crossWalletBalance: "1.5",
         availableBalance: "1.5",
       },
@@ -52,6 +52,8 @@ describe("Binance Futures Trading Functions", () => {
     const symbol = "MBLUSDT";
 
     const transaction = await deleteAllFuturesOrder(symbol);
-    expect(transaction).toHaveProperty({ success: true });
+    expect(transaction).toHaveProperty({ code: 200 });
+    expect(transaction).toHaveProperty({ msg: "The operation of cancel all open order is done" });
+
   });
 });
