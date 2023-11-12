@@ -78,21 +78,21 @@ async function deleteAllFuturesOrder(symbol) {
 }
 
 (async () => {
-  const symbol = "SOLUSDT";
+  const symbol = "LQTYUSDT";
   const type = "LIMIT";
   const price = 50;
   const action = "BUY";
   const orderId = "7385677";
   const quantity = (.5 / price);
-  const transaction = await futuresOrder(symbol, action, quantity, price);
-  // const balance = await checkFuturesBalance();
+  // const transaction = await futuresOrder(symbol, action, quantity, price);
+  const balance = await checkFuturesBalance();
   // const getOrder = await getAllFuturesOrders(symbol);
 
   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
   // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
 
-  console.log("response is:", transaction);
-  // console.log("balance is:", balance);
+  // console.log("response is:", transaction);
+  console.log("balance is:", balance);
   // console.log("order is: ", getOrder);
 })();
 
