@@ -34,13 +34,13 @@ describe("Binance Spot Trading Functions", () => {
     const orderId = 7385677; // valid order ID
 
     const response = await deleteSpotTrade(symbol, orderId);
-    expect(response).toHaveProperty("status", "CANCELLED");
+    expect(response).toHaveProperty({status: "CANCELLED"});
   });
 
   test("should delete all spot trades", async () => {
     const symbol = "BTCUSDT";
 
     const response = await deleteAllSpotTrade(symbol);
-    expect(response).toHaveProperty("status", "CANCELLED");
+    expect(response).toHaveProperty({ success: true });
   });
 });
