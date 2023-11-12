@@ -10,7 +10,7 @@ async function futuresOrder(symbol, action, quantity, price) {
   try {
     const type = "LIMIT";
     const timestamp = Date.now();
-    return utility("https://api.binance.com/fapi/v1/order", "POST", {
+    return utility("https://fapi.binance.com/fapi/v1/order", "POST", {
         symbol,
         side: action,
         type,
@@ -43,7 +43,7 @@ async function deleteFuturesOrder(symbol, orderId){
   try {
     const type = "";
     const timestamp = Date.now();
-    return await utility("https://api.binance.com/fapi/v1/order", "DELETE", {
+    return await utility("https://fapi.binance.com/fapi/v1/order", "DELETE", {
       symbol,
       orderId,
       timestamp,
@@ -56,9 +56,8 @@ async function deleteFuturesOrder(symbol, orderId){
 
 async function deleteAllFuturesOrder(symbol) {
   try {
-    const type = "";
     const timestamp = Date.now();
-    return await utility("https://api.binance.com/fapi/v1/order","DELETE", {
+    return await utility("https://fapi.binance.com/fapi/v1/order","DELETE", {
       symbol,
       timestamp,
     });
@@ -74,7 +73,7 @@ async function deleteAllFuturesOrder(symbol) {
   const price = "0.000001";
   const action = "BUY";
   const orderId = "7385677";
-  const quantity = Math.round(2 / price);
+  const quantity = Math.round(1 / price);
   // const transaction = await futuresOrder(symbol, action, quantity, price);
   const balance = await checkFuturesBalance();
   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
