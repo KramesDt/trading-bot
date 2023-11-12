@@ -26,7 +26,7 @@ const crypto = require("node:crypto");
             "Content-type": "application/x-www-form-urlencoded",
         },
     });
-    const response = await request.json();
+    const response = request.json();
     return response;
 }
 

@@ -20,7 +20,6 @@ async function getTickerprice(symbol) {
     throw error;
   }
 }
-
 //SPOT Trade
 //Make trade based on the available params
 async function makeTrade(symbol, price, action, quantity) {
@@ -70,42 +69,46 @@ async function makeTrade(symbol, price, action, quantity) {
   }
 }
 
-async function checkBalance() {
+async function checkBalance(){
   try {
     const apiKey = process.env.BINANCE_API_KEY;
     const apiSecret = process.env.BINANCE_API_SECRET;
     const endpoint = `https://api.binance.com/api/v3/account`;
     const timestamp = Date.now();
 
-    const symbol = "MBL"
+    const symbol = "USDT";
     const params = {
-      timestamp
-    }
+      timestamp,
+    };
 
-    let queryString = Object.keys(params).map((key) => `${key}=${encodeURIComponent(params[key])}`).join("&");
-    const signature = crypto.createHmac("sha256", apiSecret).update(queryString).digest("hex");
+    let queryString = Object.keys(params)
+      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      .join("&");
+    const signature = crypto
+      .createHmac("sha256", apiSecret)
+      .update(queryString)
+      .digest("hex");
     queryString += "&signature=" + signature;
-    const url = endpoint + "?" + queryString;  
+    const url = endpoint + "?" + queryString;
 
     const request = await fetch(url, {
       method: "GET",
       headers: {
         "X-MBX-APIKEY": apiKey,
-      }
+      },
     });
 
     const response = await request.json();
     //Balance for a single coin
-    //assign symbol variable to the queried coin 
+    //assign symbol variable to the queried coin
     const coinBalance = response.balances.find((balance) => balance.asset === symbol);
-    // console.log(coinBalance)
+    console.log(coinBalance);
 
     //All Balances
     return response.balances;
-
-      } catch (error) {
-        console.log("Error", error);
-        throw error;
+  } catch (error) {
+    console.log("Error", error);
+    throw error;
   }
 }
 
@@ -230,15 +233,15 @@ async function deleteAllSpotTrade(symbol) {
 (async () => {
   const symbol = "TLMUSDT";
   // const price = await getTickerprice(symbol);
-  const price = 0.09;
+  const price = 0.08;
   const action = "SELL";
-  const quantity = Math.round(1 / price);
+  const quantity = Math.round(5 / price);
   // const balance = await checkBalance();
   // console.log(balance)
-  const allOrders = await getAllOrders(symbol)
-  console.log(allOrders);
-  // const transaction = await makeTrade(symbol, price, action, quantity);
-  // console.log(transaction);
+  // const allOrders = await getAllOrders(symbol)
+  // console.log(allOrders);
+  const transaction = await makeTrade(symbol, price, action, quantity);
+  console.log(transaction);
   // const deleteOrder = await deleteSpotTrade("TLMUSDT", 7385677);
   // console.log(deleteOrder);
 })();

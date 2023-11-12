@@ -3,7 +3,7 @@ const {
   checkFuturesBalance,
   deleteFuturesOrder,
   deleteAllFuturesOrder,
-} = require("../futuresApi");
+} = require("../futures");
 
 describe("Binance Futures Trading Functions", () => {
   test("should make a futures order", async () => {
@@ -33,7 +33,7 @@ describe("Binance Futures Trading Functions", () => {
         availableBalance: "1.5",
       },
     ];
-    const transaction = await deleteAllFuturesOrder();
+    const transaction = await checkFuturesBalance();
     expect(transaction).toEqual(expectedResponse);
   });
 
