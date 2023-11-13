@@ -117,7 +117,7 @@ async function deleteAllFuturesOrder(symbol) {
 
 
   const leverage = 20; //Leverage on the futures
-  const percent = 20;//Specify the percentage of USDT balance you want to trade with
+  const percent = 50;//Specify the percentage of USDT balance you want to trade with
   const stake = parseFloat((percent/100)*balance) //amount traded with in USDT
   const type = "LIMIT";
   const price = 1.3; //THe price you wanna trade at
@@ -132,7 +132,7 @@ async function deleteAllFuturesOrder(symbol) {
   // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
 
   console.log("Minimun Order Qty of", symbol, "is:", orderQty);
-  console.log("Futures Order Successful:", transaction);
+  console.log("Futures Order:", transaction);
   // console.log("Balance is:", balance);
   // console.log("order is: ", getOrder);
   // console.log("Successfully Deleted: ", deleteTransaction);
