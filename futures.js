@@ -1,6 +1,30 @@
 require("dotenv").config();
 const utility = require('./util')
 
+//Get Symbol Info
+async function getExchangeInfo(symbol) {
+  const endpoint = "https://fapi.binance.com/fapi/v1/exchangeInfo";
+  const response = await fetch(endpoint);
+  const exchangeInfo = await response.json();
+
+  // Check if exchangeInfo and exchangeInfo.symbols are defined
+  if (!exchangeInfo || !exchangeInfo.symbols) {
+    throw new Error("Failed to retrieve exchange information");
+  }
+
+  const symbolInfo = exchangeInfo.symbols.find((s) => s.symbol === symbol);
+  // console.log(symbolInfo)
+
+  if (!symbolInfo) {
+    throw new Error(`Symbol ${symbol} not found`);
+  }
+
+  const minOrderQty = symbolInfo.filters.find(
+    (f) => f.filterType === "LOT_SIZE"
+  ).minQty;
+  return minOrderQty;
+}
+
 //futures order
 //can be a LIMIT or MARKET order depending on specified "type" in params
 //can be a BUY or SELL order depending on specified "side" in params
@@ -24,18 +48,22 @@ async function futuresOrder(symbol, leverage, action, quantity, price) {
   }
 }
 
-//Check balance
+//Check balances
 async function checkFuturesBalance(symbol) {
     try {
       const timestamp = Date.now();
       const recvWindow = 10000;
-      return utility("https://fapi.binance.com/fapi/v2/balance", "GET",{
+      const balances = await utility("https://fapi.binance.com/fapi/v2/balance", "GET",{
       symbol,
       timestamp,
       recvWindow
     });
-
-    
+    const assetBalance = balances.find((a)=> a.asset === "USDT")
+    if (assetBalance) {
+      return assetBalance && assetBalance.balance
+    } else {
+      return "Asset does not exist"
+    }
 
   } catch (error) {
     console.log(error, ":error");
@@ -84,24 +112,30 @@ async function deleteAllFuturesOrder(symbol) {
 
 (async () => {
   const symbol = "LQTYUSDT";
-  const leverage = 20;
-  const percent = 7;//Specify the amount you want to trade with
+
+  const balance = await checkFuturesBalance(symbol);
+
+
+  const leverage = 20; //Leverage on the futures
+  const percent = 20;//Specify the percentage of USDT balance you want to trade with
+  const stake = parseFloat((percent/100)*balance) //amount traded with in USDT
   const type = "LIMIT";
-  const price = 1.3;
+  const price = 1.3; //THe price you wanna trade at
   const action = "BUY";
   const orderId = 1203106767;
-  const quantity = Math.round(percent / price);
-  // const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
-  // const balance = await checkFuturesBalance(symbol);
-  // const getOrder = await getAllFuturesOrders();
+  const quantity = Math.round(stake / price); //Quantity of assets futures traded
 
-  const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
+  const orderQty = await getExchangeInfo(symbol);
+  const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
+  // const getOrder = await getAllFuturesOrders();
+  // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
   // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
 
-  // console.log("response is:", transaction);
-  // console.log("balance is:", balance);
+  console.log("Minimun Order Qty of", symbol, "is:", orderQty);
+  console.log("Futures Order Successful:", transaction);
+  // console.log("Balance is:", balance);
   // console.log("order is: ", getOrder);
-  console.log("Successfully Deleted: ", deleteTransaction);
+  // console.log("Successfully Deleted: ", deleteTransaction);
 })();
 
 
