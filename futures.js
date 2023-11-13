@@ -71,10 +71,23 @@ async function checkFuturesBalance(symbol) {
   }
 }
 
+async function getAllOpenFuturesOrders() {
+  try {
+    const timestamp = Date.now();
+    return utility("https://fapi.binance.com/fapi/v1/openOrders", "GET", {
+      timestamp,
+    });
+  } catch (error) {
+    console.log(error, ":error");
+    throw error;
+  }
+}
+
+//GETs all Futures orders; ACTIVE, CANCELLED or FILLED
 async function getAllFuturesOrders() {
   try {
     const timestamp = Date.now();
-    return utility("https://fapi.binance.com/fapi/v2/orders", "GET", {
+    return utility("https://fapi.binance.com/fapi/v1/allOrders", "GET", {
       timestamp,
     });
   } catch (error) {
@@ -100,7 +113,7 @@ async function deleteFuturesOrder(symbol, orderId){
 async function deleteAllFuturesOrder(symbol) {
   try {
     const timestamp = Date.now();
-    return await utility("https://fapi.binance.com/fapi/v1/order","DELETE", {
+    return await utility("https://fapi.binance.com/fapi/v1/allOpenOrders","DELETE", {
       symbol,
       timestamp,
     });
@@ -115,27 +128,29 @@ async function deleteAllFuturesOrder(symbol) {
 
   const balance = await checkFuturesBalance(symbol);
 
-
   const leverage = 20; //Leverage on the futures
-  const percent = 50;//Specify the percentage of USDT balance you want to trade with
-  const stake = parseFloat((percent/100)*balance) //amount traded with in USDT
+  const percent = 50; //Specify the percentage of USDT balance you want to trade with
+  const stake = parseFloat((percent / 100) * balance); //amount traded with in USDT
   const type = "LIMIT";
   const price = 1.3; //THe price you wanna trade at
   const action = "BUY";
-  const orderId = 1203106767;
+  const orderId = 1206851765;
   const quantity = Math.round(stake / price); //Quantity of assets futures traded
 
-  const orderQty = await getExchangeInfo(symbol);
-  const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
-  // const getOrder = await getAllFuturesOrders();
+  // const orderQty = await getExchangeInfo(symbol);
+  // const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
+  const openOrders = await getAllOpenFuturesOrders(); 
+  // const getAllOrders = await getAllFuturesOrders();
   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
-  // const deleteAllTransaction = await deleteAllFuturesOrder(symbol);
+  // const deleteAllTransactions = await deleteAllFuturesOrder(symbol);
 
-  console.log("Minimun Order Qty of", symbol, "is:", orderQty);
-  console.log("Futures Order:", transaction);
+  // console.log("Minimun Order Qty of", symbol, "is:", orderQty);
+  // console.log("Futures Order:", transaction);
+  console.log("OPen Orders: ", openOrders);
+  // console.log("All Orders: ", getAllOrders);
   // console.log("Balance is:", balance);
-  // console.log("order is: ", getOrder);
-  // console.log("Successfully Deleted: ", deleteTransaction);
+ // console.log("Successfully Deleted: ", deleteTransaction);
+  // console.log("Successfully Deleted: ", deleteAllTransactions);
 })();
 
 
