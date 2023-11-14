@@ -126,20 +126,26 @@ async function deleteAllFuturesOrder(symbol) {
 (async () => {
   const symbol = "LQTYUSDT";
 
-  // const balance = await checkFuturesBalance(symbol);
+  const balance = await checkFuturesBalance(symbol);
+  const minOrdNotional = await getExchangeInfo(symbol); //Get minimum oder notional
 
   const leverage = 20; //Leverage on the futures
-  const percent = 50; //Specify the percentage of USDT balance you want to trade with
-  // const stake = parseFloat((percent / 100) * balance); //amount traded with in USDT
+  const percent = 20; //Specify the percentage of USDT balance you want to trade with
   const type = "LIMIT";
   const price = 1.3; //THe price you wanna trade at
+
+  const stake = parseFloat((percent / 100) * balance); //amount traded with in USDT
+  const setQty = Math.round(stake / price); //Quantity of assets futures traded
+  const minQty = (price * minOrdNotional);
+  const qtyArray = [setQty, minQty];
+  const quantity = Math.max(qtyArray)
+  console.log("Quantity: ", quantity )
+
   const action = "BUY";
   const orderId = 1206851765;
-  // const quantity = Math.round(stake / price); //Quantity of assets futures traded
 
-  const orderQty = await getExchangeInfo(symbol);
   // const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
-  // const openOrders = await getAllOpenFuturesOrders(); 
+  // const openOrders = await getAllOpenFuturesOrders();
   // const getAllOrders = await getAllFuturesOrders();
   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
   // const deleteAllTransactions = await deleteAllFuturesOrder(symbol);
@@ -149,7 +155,7 @@ async function deleteAllFuturesOrder(symbol) {
   // console.log("OPen Orders: ", openOrders);
   // console.log("All Orders: ", getAllOrders);
   // console.log("Balance is:", balance);
- // console.log("Successfully Deleted: ", deleteTransaction);
+  // console.log("Successfully Deleted: ", deleteTransaction);
   // console.log("Successfully Deleted: ", deleteAllTransactions);
 })();
 
@@ -157,6 +163,7 @@ async function deleteAllFuturesOrder(symbol) {
 module.exports = {
   futuresOrder,
   checkFuturesBalance,
+  getAllOpenFuturesOrders,
   getAllFuturesOrders,
   deleteFuturesOrder,
   deleteAllFuturesOrder
