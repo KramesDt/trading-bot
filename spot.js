@@ -1,6 +1,4 @@
 const crypto = require("crypto");
-// const Binance = require("binance-api-node")
-
 require("dotenv").config();
 
 
@@ -54,6 +52,50 @@ async function makeTrade(symbol, price, action, quantity) {
     //
     const request = await fetch(url, {
       method: "POST",
+      headers: {
+        "X-MBX-APIKEY": apiKey,
+        "Content-type": "application/x-www-form-urlencoded",
+      },
+    });
+    // console.log(url);
+    const response = await request.json();
+    // console.log(response);
+    return response;
+  } catch (error) {
+    // console.log("Error", error);
+    throw error;
+  }
+}
+
+async function modifyTrade(symbol, price, action, quantity) {
+  try {
+    const apiKey = process.env.BINANCE_API_KEY;
+    const apiSecret = process.env.BINANCE_API_SECRET;
+    const endpoint = "https://api.binance.com/api/v3/order";
+    const timestamp = Date.now();
+    const params = {
+      symbol,
+      side: action,
+      quantity,
+      price,
+      timestamp,
+    };
+
+    //create query string to be appended to the URL
+    let queryString = Object.keys(params)
+      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      .join("&");
+    const signature = crypto
+      .createHmac("sha256", apiSecret)
+      .update(queryString)
+      .digest("hex");
+
+    queryString += "&signature=" + signature;
+    const url = endpoint + "?" + queryString;
+
+    //
+    const request = await fetch(url, {
+      method: "PUT",
       headers: {
         "X-MBX-APIKEY": apiKey,
         "Content-type": "application/x-www-form-urlencoded",
@@ -249,6 +291,7 @@ async function deleteAllSpotTrade(symbol) {
 module.exports = {
   getTickerprice,
   makeTrade,
+  modifyTrade,
   checkBalance,
   deleteSpotTrade,
   deleteAllSpotTrade,
