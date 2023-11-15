@@ -41,10 +41,24 @@ async function makeTrade(symbol, price, action, quantity) {
   }
 }
 
+async function modifyTrade(symbol, price, action, quantity) {
+  try {
+    const timestamp = Date.now();
+    return utility("https://api.binance.com/api/v3/order", "PUT", {
+      symbol,
+      side: action,
+      quantity,
+      price,
+      timestamp,
+    });
+  } catch (error) {
+    // console.log("Error", error);
+    throw error;
+  }
+}
+
 async function checkBalance(){
   try {
-
-    const endpoint = ``;
     const timestamp = Date.now();
     const symbol = "USDT";
     const response = utility("https://api.binance.com/api/v3/account", "GET", {
@@ -126,6 +140,8 @@ async function deleteAllSpotTrade(symbol) {
 module.exports = {
   getTickerprice,
   makeTrade,
+  modifyTrade,
+  getAllOrders,
   checkBalance,
   deleteSpotTrade,
   deleteAllSpotTrade,
