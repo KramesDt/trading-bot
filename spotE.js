@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const utility = require("./util");
 
 require("dotenv").config();
@@ -33,7 +32,7 @@ async function makeTrade(symbol, price, action, quantity) {
       price,
       timestamp,
       timeInForce: "GTC",
-      recvWindow: 10000
+      recvWindow: 5000
     });
   } catch (error) {
     // console.log("Error", error);
@@ -123,14 +122,16 @@ async function deleteAllSpotTrade(symbol) {
 
 (async () => {
   const symbol = "TLMUSDT";
-  // const price = await getTickerprice(symbol);
-  const price = 0.08;
+  const price = 0.02;
   const action = "SELL";
-  const quantity = Math.round(5 / price);
+  const quantity = 19;
+  // const quantity = Math.round(5 / price);
   // const balance = await checkBalance();
   // console.log(balance)
   // const allOrders = await getAllOrders(symbol)
-  // console.log(allOrders);
+  const ticPrice = await getTickerprice(symbol);
+
+  console.log(ticPrice);
   const transaction = await makeTrade(symbol, price, action, quantity);
   console.log(transaction);
   // const deleteOrder = await deleteSpotTrade("TLMUSDT", 7385677);
