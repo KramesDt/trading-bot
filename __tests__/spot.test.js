@@ -8,6 +8,7 @@ const {
 
 
 describe("Binance Spot Trading Functions", () => {
+
   test("should fetch ticker price", async () => {
     const symbol = "BTCUSDT";
     const price = await getTickerprice(symbol);
@@ -18,10 +19,13 @@ describe("Binance Spot Trading Functions", () => {
     const symbol = "MBLUSDT";
     const price = 0.005; 
     const action = "SELL";
-    const quantity = 100;
+    const quantity = 500;
 
     const transaction = await makeTrade(symbol, price, action, quantity);
-    expect(transaction).toHaveProperty("orderId");
+    expect(transaction).toEqual({ orderId: 12345 });
+
+    // expect(transaction).toHaveProperty("orderId");
+
   });
 
   test("should check balance", async () => {
