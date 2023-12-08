@@ -48,7 +48,6 @@ if (alerts[0].action === "Buy" || "Sell"){
         timestamp = Date.now(),
         timeInForce = "GTC", 
         )
-    
     console.log(trade)
 }
 

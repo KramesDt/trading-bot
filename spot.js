@@ -1,4 +1,5 @@
-const crypto = require("node:crypto");
+const utility = require("./util");
+
 require("dotenv").config();
 
 
@@ -22,11 +23,8 @@ async function getTickerprice(symbol) {
 //Make trade based on the available params
 async function makeTrade(symbol, price, action, quantity) {
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = "https://api.binance.com/api/v3/order";
     const timestamp = Date.now();
-    const params = {
+    return utility("https://api.binance.com/api/v3/order", "POST",  {
       symbol,
       side: action,
       type: "LIMIT", //for market orders "price"and "timeInForce" params are not needed
@@ -34,33 +32,8 @@ async function makeTrade(symbol, price, action, quantity) {
       price,
       timestamp,
       timeInForce: "GTC",
-      recvWindow: 10000
-    };
-
-    //create query string to be appended to the URL
-    let queryString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac("sha256", apiSecret)
-      .update(queryString)
-      .digest("hex");
-
-    queryString += "&signature=" + signature;
-    const url = endpoint + "?" + queryString;
-
-    //
-    const request = await fetch(url, {
-      method: "POST",
-      headers: {
-        "X-MBX-APIKEY": apiKey,
-        "Content-type": "application/x-www-form-urlencoded",
-      },
+      recvWindow: 5000
     });
-    // console.log(url);
-    const response = await request.json();
-    // console.log(response);
-    return response;
   } catch (error) {
     // console.log("Error", error);
     throw error;
@@ -69,42 +42,14 @@ async function makeTrade(symbol, price, action, quantity) {
 
 async function modifyTrade(symbol, price, action, quantity) {
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = "https://api.binance.com/api/v3/order";
     const timestamp = Date.now();
-    const params = {
+    return utility("https://api.binance.com/api/v3/order", "PUT", {
       symbol,
       side: action,
       quantity,
       price,
       timestamp,
-    };
-
-    //create query string to be appended to the URL
-    let queryString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac("sha256", apiSecret)
-      .update(queryString)
-      .digest("hex");
-
-    queryString += "&signature=" + signature;
-    const url = endpoint + "?" + queryString;
-
-    //
-    const request = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "X-MBX-APIKEY": apiKey,
-        "Content-type": "application/x-www-form-urlencoded",
-      },
     });
-    // console.log(url);
-    const response = await request.json();
-    // console.log(response);
-    return response;
   } catch (error) {
     // console.log("Error", error);
     throw error;
@@ -113,34 +58,11 @@ async function modifyTrade(symbol, price, action, quantity) {
 
 async function checkBalance(){
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = `https://api.binance.com/api/v3/account`;
     const timestamp = Date.now();
-
     const symbol = "USDT";
-    const params = {
-      timestamp,
-    };
-
-    let queryString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac("sha256", apiSecret)
-      .update(queryString)
-      .digest("hex");
-    queryString += "&signature=" + signature;
-    const url = endpoint + "?" + queryString;
-
-    const request = await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-MBX-APIKEY": apiKey,
-      },
-    });
-
-    const response = await request.json();
+    const response = utility("https://api.binance.com/api/v3/account", "GET", {
+      timestamp
+    })
     //Balance for a single coin
     //assign symbol variable to the queried coin
     const coinBalance = response.balances.find((balance) => balance.asset === symbol);
@@ -156,31 +78,11 @@ async function checkBalance(){
 
 async function getAllOrders(symbol) {
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = `https://api.binance.com/api/v3/allOrders`;
     const timestamp = Date.now();
-
-    const params = {
+    return utility("https://api.binance.com/api/v3/allOrders", "GET", {
       symbol,
       timestamp
-    }
-
-    let queryString = Object.keys(params).map(key=>`${key}=${encodeURIComponent(params[key])}`).join('&');
-    const signature = crypto.createHmac("sha256", apiSecret).update(queryString).digest('hex');
-    queryString +="&signature="+signature;
-    const url = endpoint+"?"+queryString;
-
-    const request = await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-MBX-APIKEY": apiKey,
-        "Content-type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    const response = request.json()
-    return response
+    })
   } catch (error) {
     console.log("Error", error);
     throw error;
@@ -189,41 +91,14 @@ async function getAllOrders(symbol) {
 
 async function deleteSpotTrade(symbol, orderId){
     try {
-      const apiKey = process.env.BINANCE_API_KEY;
-      const apiSecret = process.env.BINANCE_API_SECRET;
-      const endpoint = `https://api.binance.com/api/v3/order`;
+      const endpoint = ``;
       const timestamp = Date.now();
-
-      const params = {
+      return utility("https://api.binance.com/api/v3/order", "DELETE", {
         symbol,
         orderId,
         timestamp,
         recvWindow: 5000,
-      };
-
-      let queryString = Object.keys(params)
-        .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-        .join("&");
-      const signature = crypto
-        .createHmac("sha256", apiSecret)
-        .update(queryString)
-        .digest("hex");
-
-      queryString += "&signature=" + signature;
-      const url = endpoint + "?" + queryString;
-
-      //
-      const request = await fetch(url, {
-        method: "DELETE",
-        headers: {
-          "X-MBX-APIKEY": apiKey,
-          "Content-type": "application/x-www-form-urlencoded",
-        },
-      });
-      // console.log(url);
-
-      const response = await request.json();
-      return response;
+      })
     } catch (error) {
       console.log("Error", error);
       throw error;
@@ -232,40 +107,13 @@ async function deleteSpotTrade(symbol, orderId){
 
 async function deleteAllSpotTrade(symbol) {
   try {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
-    const endpoint = `https://api.binance.com/api/v3/cancelOrders`;
+    const endpoint = ``;
     const timestamp = Date.now();
-
-    const params = {
+    return utility("https://api.binance.com/api/v3/cancelOrders", "DELETE", {
       symbol,
       timestamp,
       recvWindow: 5000,
-    };
-
-    let queryString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
-      .join("&");
-    const signature = crypto
-      .createHmac("sha256", apiSecret)
-      .update(queryString)
-      .digest("hex");
-
-    queryString += "&signature=" + signature;
-    const url = endpoint + "?" + queryString;
-
-    //
-    const request = await fetch(url, {
-      method: "DELETE",
-      headers: {
-        "X-MBX-APIHEY": apiKey,
-        "Content-type": "application/x-www-form-urlencoded",
-      },
-    });
-    // console.log(url);
-
-    const response = await request.json();
-    return response;
+    })
   } catch (error) {
     console.log("Error", error);
     throw error;
@@ -274,14 +122,16 @@ async function deleteAllSpotTrade(symbol) {
 
 (async () => {
   const symbol = "TLMUSDT";
-  // const price = await getTickerprice(symbol);
-  const price = 0.08;
+  const price = 0.02;
   const action = "SELL";
-  const quantity = Math.round(5 / price);
+  const quantity = 19;
+  // const quantity = Math.round(5 / price);
   // const balance = await checkBalance();
   // console.log(balance)
   // const allOrders = await getAllOrders(symbol)
-  // console.log(allOrders);
+  const ticPrice = await getTickerprice(symbol);
+
+  console.log(ticPrice);
   const transaction = await makeTrade(symbol, price, action, quantity);
   console.log(transaction);
   // const deleteOrder = await deleteSpotTrade("TLMUSDT", 7385677);
@@ -292,6 +142,7 @@ module.exports = {
   getTickerprice,
   makeTrade,
   modifyTrade,
+  getAllOrders,
   checkBalance,
   deleteSpotTrade,
   deleteAllSpotTrade,
