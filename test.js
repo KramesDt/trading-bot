@@ -28,3 +28,4 @@ const alerts = [extractDetails(alertText1), extractDetails(alertText2)];
 
 // Display the result
 console.log(alerts);
+console.log(alerts[0].action);
