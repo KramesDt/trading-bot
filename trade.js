@@ -16,24 +16,26 @@ const extractDetails = (text) => {
 
   // Extracting information using regular expressions
   const match = text.match(
-    /Timeframe = (\d+) Book a buy position .* price = (\d+\.\d+), volume = (\d+\.\d+)/
+    /(Buy|Sell) potential: BINANCE:(\w+), Timeframe = (\d+) Book a (buy|sell) position .* price = (\d+\.\d+), volume = (\d+\.\d+)/
   );
 
   if (match) {
-    details.symbol = match[1];
-    details.timeframe = match[2];
-    details.price = match[3];
-    details.volume = match[4];
+    details.action = match[1]; // Buy or Sell
+    details.symbol = match[2]; // Symbol (e.g., SOLUSD)
+    details.timeframe = match[3]; // Timeframe (e.g., 5)
+    details.price = match[5]; // Price
+    details.volume = match[6]; // Volume
   }
 
   return details;
 };
 
 // Save details into an array
-const alerts = [
-    extractDetails(alertText1), 
-    extractDetails(alertText2)
-];
+const alerts = [extractDetails(alertText1), extractDetails(alertText2)];
 
 // Display the result
 console.log(alerts);
+
+
+
+
