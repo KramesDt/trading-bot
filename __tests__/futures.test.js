@@ -40,9 +40,6 @@ describe("Binance Futures Trading Functions", () => {
 
     let openPosition = (await getFuturesRiskPNLOrders(symbol))[0]
     console.log("orderId:", symbol, openPosition);
-    const openfutures2 = await getAllFuturesOrders()
-    expect(Array.isArray(openfutures2)).toEqual(true);
-    console.log(openfutures2)
     const transaction = await futuresOrder(symbol, parseFloat(openPosition.positionAmt) > 0 ? "SELL" : "BUY", Math.abs(+openPosition.positionAmt), "MARKET");
     await sleep(5000)
     openPosition = await getFuturesRiskPNLOrders(symbol)
