@@ -76,7 +76,7 @@ async function getAllActiveFutures() {
 }
 
 //Check balances
-async function checkFuturesBalance(symbol) {
+async function checkFuturesBalance(symbol = "USDT") {
   try {
     const timestamp = Date.now();
     const recvWindow = 10000;
@@ -87,7 +87,7 @@ async function checkFuturesBalance(symbol) {
     });
     const assetBalances = balances.filter((a) => parseInt(a.balance) > 0)
     if (assetBalances) {
-      return { assets: assetBalances, assetBalance: assetBalances.find(asset => asset.asset == (symbol ?? "USDT")) }
+      return { assets: assetBalances, assetBalance: assetBalances.find(asset => asset.asset == symbol) }
     } else {
       return "Asset does not exist"
     }
@@ -104,7 +104,7 @@ async function getAllOpenFuturesOrders(symbol = null) {
     return utility("https://fapi.binance.com/fapi/v1/openOrders", "GET", symbol ? {
       symbol,
       timestamp,
-      recvWindow:600000
+      recvWindow: 600000
     } : {
       timestamp,
       recvWindow: 600000
