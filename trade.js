@@ -1,9 +1,11 @@
+require("dotenv").config();
+
 const {
   futuresOrder,
   checkFuturesBalance,
   deleteFuturesOrder,
   deleteAllFuturesOrder,
-} = require("../futures");
+} = require("./futures");
 
 const alertText1 =
   "STIC Tool Alert: Buy potential: BINANCE:SOLUSD, Timeframe = 5 Book a buy position (usable on all timeframe) price = 62.72, volume = 1762.81. You should possible wait for confirmation close above the flip line (yellow line) if you are late. Do not FOMO if you are late. cryptosmartanalyst.com";
@@ -36,21 +38,17 @@ const alerts = [extractDetails(alertText1), extractDetails(alertText2)];
 // Display the result
 console.log(alerts);
 
-if (alerts[0].action === "Buy" || "Sell"){
-    const trade = futuresOrder(
-        alerts[0].action,
-        alerts[0].symbol,
-        leverage = 1,
-        side = action,
-        type = "LIMIT",
-        quantity,
-        alerts[0].price,
-        timestamp = Date.now(),
-        timeInForce = "GTC", 
-        )
-    
-    console.log(trade)
+if (alerts[0].action === "Buy" || "Sell") {
+  const trade = futuresOrder(
+    alerts[0].action,
+    alerts[0].symbol,
+    (leverage = 1),
+    (side = action),
+    (type = "LIMIT"),
+    quantity,
+    alerts[0].price,
+    (timestamp = Date.now()),
+    (timeInForce = "GTC")
+  );
+  console.log(trade);
 }
-
-
-
