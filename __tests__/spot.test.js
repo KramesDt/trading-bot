@@ -7,7 +7,7 @@ const {
 } = require("../spot.js");
 
 
-describe("Binance Spot Trading Functions", () => {
+describe("BinanceSpotTrading Functions", () => {
 
   test("should fetch ticker price", async () => {
     const symbol = "BTCUSDT";
