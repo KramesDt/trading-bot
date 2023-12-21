@@ -68,10 +68,10 @@ async function futuresOrder(
   }
 }
 
-async function getAllActiveFutures() {
+async function getPositionInfo() {
   try {
     const timestamp = Date.now();
-    return utility("https://api-testnet.bybit.com/v5/order/realtime", "GET", {
+    return utility("https://api-testnet.bybit.com/v5/position/list", "GET", {
       timestamp,
     });
   } catch {
