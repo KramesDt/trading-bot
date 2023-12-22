@@ -10,6 +10,7 @@ async function utility(endpoint, verb, param) {
   const recvWindow = 5000;
   const params = param;
 
+
   let queryString = Object.keys(params)
     .map((key) => `${key}=${encodeURIComponent(params[key])}`)
     .join("&");
@@ -19,7 +20,7 @@ async function utility(endpoint, verb, param) {
     .digest("hex");
   console.log("signature: ", signature)
   queryString += "&signature=" + signature;
-  const url = endpoint + "?" + queryString;
+  const url = endpoint + "?" + queryString + "&symbol=BTC" + "&timeInForce=GTC" ; //The hardcoded values are just to test
   console.log(url);
   const request = await fetch(url, {
     method: verb,

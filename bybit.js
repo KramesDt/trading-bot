@@ -39,7 +39,7 @@ async function futuresOrder(
   price = 0,
   marketType = "MARKET",
   leverage = "25",
-  timeInForce = "GTC"
+  // timeInForce = "GTC"
 ) {
   try {
     const category = "linear";
@@ -57,8 +57,8 @@ async function futuresOrder(
           price,
           quantity,
           side: action,
-          symbol,
-          timeInForce,
+          // symbol,
+          // timeInForce,
         });
   } catch (error) {
     console.log(error, ":error");
