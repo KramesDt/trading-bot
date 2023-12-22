@@ -17,7 +17,7 @@ async function utility(endpoint, verb, param) {
     .createHmac("sha256", apiSecret)
     .update(timestamp + apiKey + recvWindow + queryString)
     .digest("hex");
-  queryString += "&signature=" + signature;
+  // queryString += "&signature=" + signature;
   const url = endpoint + "?" + queryString;
   console.log(url);
   const request = await fetch(url, {
@@ -28,6 +28,8 @@ async function utility(endpoint, verb, param) {
       "X-BAPI-API-KEY": apiKey,
       "X-BAPI-TIMESTAMP": timestamp,
       "X-BAPI-RECV-WINDOW": recvWindow.toString(),
+      "Content-Type" : "application/json; charset=utf-8"
+
     },
   });
   const response = request.json();
