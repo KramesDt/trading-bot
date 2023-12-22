@@ -46,18 +46,18 @@ async function futuresOrder(
     return marketType == "MARKET"
       ? utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
           category,
-          symbol,
-          side: action,
           orderType: marketType,
           quantity,
+          side: action,
+          symbol,
         })
       : utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
           category,
-          symbol,
-          side: action,
           orderType: marketType,
-          quantity,
           price,
+          quantity,
+          side: action,
+          symbol,
           timeInForce,
         });
   } catch (error) {
