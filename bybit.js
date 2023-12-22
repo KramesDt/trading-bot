@@ -47,7 +47,6 @@ async function futuresOrder(
       ? utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
           category,
           symbol,
-          leverage,
           side: action,
           orderType: marketType,
           quantity,
@@ -55,7 +54,6 @@ async function futuresOrder(
       : utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
           category,
           symbol,
-          leverage,
           side: action,
           orderType: marketType,
           quantity,
@@ -65,6 +63,21 @@ async function futuresOrder(
   } catch (error) {
     console.log(error, ":error");
     throw error;
+  }
+}
+
+//set leverage
+async function setLeverage(symbol, buyLeverage){
+  try {
+    const category = "linear";
+    return utility("https://api-testnet.bybit.com/v5/position/set-leverage", "POST", {
+      category,
+      symbol,
+      buyLeverage
+    });
+  } catch (error) {
+    console.log("error:", error);
+    throw error
   }
 }
 
@@ -81,24 +94,25 @@ async function getPositionInfo() {
 }
 
 //Check balances
-async function checkFuturesBalance(symbol = "USDT") {
+async function checkFuturesBalance() {
   try {
     const balances = await utility(
       "https://api-testnet.bybit.com/v5/account/wallet-balance",
       "GET",
       {
-        symbol,
+        accountType: "UNIFIED",
       }
     );
-    const assetBalances = balances.filter((a) => parseInt(a.coin) > 0);
-    if (assetBalances) {
-      return {
-        assets: assetBalances,
-        assetBalance: assetBalances.find((asset) => asset.asset == symbol),
-      };
-    } else {
-      return "Asset does not exist";
-    }
+    console.log(balances)
+    // const assetBalances = balances.filter((a) => parseInt(a.coin) > 0);
+    // if (assetBalances) {
+    //   return {
+    //     assets: assetBalances,
+    //     assetBalance: assetBalances.find((asset) => asset.asset == symbol),
+    //   };
+    // } else {
+    //   return "Asset does not exist";
+    // }
   } catch (error) {
     console.log(error, ":error");
     throw error;
@@ -149,6 +163,7 @@ async function deleteFuturesOrder(symbol, orderId) {
       {
         category,
         symbol,
+        orderId
       }
     );
   } catch (error) {
@@ -178,10 +193,15 @@ async function deleteAllFuturesOrder() {
   const sym = await getTickerPrice(symbol);
   console.log(sym);
 
-  const transaction = await futuresOrder(symbol,25, "BUY", 20, 29000);
-  console.log(transaction)
+  const transaction = await futuresOrder(symbol, 25, "BUY", 20, 29000);
+  console.log(transaction);
 
-  // const balance = await checkFuturesBalance(symbol);
+  // const balance = await checkFuturesBalance();
+  // console.log("Balance is:", balance);
+
+  const openOrders = await getAllOpenFuturesOrders();
+  console.log("OPen Orders: ", openOrders);
+
   // const minOrdNotional = await getMiniumPerAsset(symbol); //Get minimum oder notional
 
   // const leverage = 20; //Leverage on the futures
@@ -200,16 +220,13 @@ async function deleteAllFuturesOrder() {
   //   const orderId = 1206851765;
 
   //   // const transaction = await futuresOrder(symbol,leverage, action, quantity, price);
-  //   // const openOrders = await getAllOpenFuturesOrders();
   //   // const getAllOrders = await getAllFuturesOrders();
   //   // const deleteTransaction = await deleteFuturesOrder(symbol, orderId);
   //   // const deleteAllTransactions = await deleteAllFuturesOrder(symbol);
 
   //   console.log("Minimun Order Notional Qty of", symbol, "is:", orderQty);
   //   // console.log("Futures Order:", transaction);
-  //   // console.log("OPen Orders: ", openOrders);
   //   // console.log("All Orders: ", getAllOrders);
-  //   // console.log("Balance is:", balance);
   //   // console.log("Successfully Deleted: ", deleteTransaction);
   //   // console.log("Successfully Deleted: ", deleteAllTransactions);
 })();
