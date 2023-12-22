@@ -199,8 +199,8 @@ async function deleteAllFuturesOrder() {
   // const balance = await checkFuturesBalance();
   // console.log("Balance is:", balance);
 
-  const openOrders = await getAllOpenFuturesOrders();
-  console.log("OPen Orders: ", openOrders);
+  // const openOrders = await getAllOpenFuturesOrders();
+  // console.log("OPen Orders: ", openOrders);
 
   // const minOrdNotional = await getMiniumPerAsset(symbol); //Get minimum oder notional
 

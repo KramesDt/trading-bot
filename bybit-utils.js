@@ -6,7 +6,8 @@ async function utility(endpoint, verb, param) {
   const apiSecret = process.env.BYBIT_API_SECRET;
   // let endpoint = endpoint;
 
-  const timestamp = Date.now();
+  const timestamp = Date.now().toString();
+  const recvWindow = 5000;
   const params = param;
 
   let queryString = Object.keys(params)
@@ -14,7 +15,7 @@ async function utility(endpoint, verb, param) {
     .join("&");
   const signature = crypto
     .createHmac("sha256", apiSecret)
-    .update(queryString)
+    .update(timestamp + apiKey + recvWindow + queryString)
     .digest("hex");
   queryString += "&signature=" + signature;
   const url = endpoint + "?" + queryString;
@@ -22,10 +23,11 @@ async function utility(endpoint, verb, param) {
   const request = await fetch(url, {
     method: verb,
     headers: {
-      "X-BAPI-API-KEY": apiKey,
-      "Content-type": "application/json",
-      "X-BAPI-TIMESTAMP": Date.now(),
+      "X-BAPI-SIGN-TYPE": "2",
       "X-BAPI-SIGN": signature,
+      "X-BAPI-API-KEY": apiKey,
+      "X-BAPI-TIMESTAMP": timestamp,
+      "X-BAPI-RECV-WINDOW": recvWindow.toString(),
     },
   });
   const response = request.json();
