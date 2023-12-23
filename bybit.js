@@ -29,6 +29,13 @@ async function getTickerPrice(symbol) {
   
 }
 
+async function getServerTime(){
+  const serverTime = await fetch("https://api-testnet.bybit.com/v5/market/time");
+  let serverTimeStamp = await serverTime.json();
+  const timeStamp = serverTimeStamp.time;
+  console.log("Server Time: ", serverTimeStamp.time);
+}
+
 //futures order
 //can be a LIMIT or MARKET order depending on specified "type" in params
 //can be a BUY or SELL order depending on specified "side" in params
