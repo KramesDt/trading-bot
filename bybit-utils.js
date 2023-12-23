@@ -21,7 +21,7 @@ async function utility(endpoint, method, param) {
   console.log("signature: ", signature);
 
   // queryString += "&signature=" + signature;
-  const url = endpoint + "?" + queryString + "&symbol=BTC" + "&timeInForce=GTC"; //The hardcoded values are just to test
+  const url = endpoint + "?" + queryString;
   console.log(url);
   const request = await fetch(url, {
     method: method,
