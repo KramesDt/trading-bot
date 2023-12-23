@@ -2,8 +2,8 @@ require("dotenv").config();
 const crypto = require("node:crypto");
 
  async function utility(endpoint,verb, param) {
-    const apiKey = process.env.BINANCE_API_KEY;
-    const apiSecret = process.env.BINANCE_API_SECRET;
+    const apiKey = process.env.BINANCEMAINNET_API_KEY;
+    const apiSecret = process.env.BINANCEMAINNET_API_SECRET;
     // let endpoint = endpoint;
 
     const timestamp = Date.now();

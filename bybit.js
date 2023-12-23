@@ -1,4 +1,6 @@
 require("dotenv").config();
+const crypto = require("node:crypto");
+
 
 const utility = require("./bybit-utils");
 
@@ -46,27 +48,40 @@ async function futuresOrder(
   price = 0,
   marketType = "MARKET",
   leverage = "25",
+  
   // timeInForce = "GTC"
 ) {
   try {
     const category = "linear";
+    const orderLinkId = crypto.randomBytes(16).toString("hex");
+
     return marketType == "MARKET"
-      ? utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
-          category,
-          orderType: marketType,
-          quantity,
-          side: action,
-          symbol,
-        })
-      : utility("https://api-testnet.bybit.com/v5/order/create", "POST", {
-          category,
-          orderType: marketType,
-          price,
-          quantity,
-          side: action,
-          // symbol,
-          // timeInForce,
-        });
+      ? utility(
+          "https://api-testnet.bybit.com/v5/order/create",
+          "POST",
+          {
+            category,
+            orderType: marketType,
+            quantity,
+            side: action,
+            symbol,
+            orderLinkId,
+          }
+        )
+      : utility(
+          "https://api-testnet.bybit.com/v5/order/create",
+          "POST",
+          {
+            symbol,
+            category,
+            orderType: marketType,
+            price,
+            quantity,
+            side: action,
+            orderLinkId,
+            // timeInForce,
+          }
+        );
   } catch (error) {
     console.log(error, ":error");
     throw error;

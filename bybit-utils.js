@@ -1,7 +1,7 @@
 require("dotenv").config();
 const crypto = require("node:crypto");
 
-async function utility(endpoint, verb, param) {
+async function utility(endpoint, method, param) {
   const apiKey = process.env.BYBIT_API_KEY;
   const apiSecret = process.env.BYBIT_API_SECRET;
   // let endpoint = endpoint;
@@ -10,27 +10,28 @@ async function utility(endpoint, verb, param) {
   const recvWindow = 5000;
   const params = param;
 
-
   let queryString = Object.keys(params)
     .map((key) => `${key}=${encodeURIComponent(params[key])}`)
     .join("&");
+
   const signature = crypto
     .createHmac("sha256", apiSecret)
-    .update( apiKey + queryString + recvWindow  + timestamp )
+    .update(apiKey + queryString + recvWindow + timestamp)
     .digest("hex");
-  console.log("signature: ", signature)
-  queryString += "&signature=" + signature;
-  const url = endpoint + "?" + queryString + "&symbol=BTC" + "&timeInForce=GTC" ; //The hardcoded values are just to test
+  console.log("signature: ", signature);
+
+  // queryString += "&signature=" + signature;
+  const url = endpoint + "?" + queryString + "&symbol=BTC" + "&timeInForce=GTC"; //The hardcoded values are just to test
   console.log(url);
   const request = await fetch(url, {
-    method: verb,
+    method: method,
     headers: {
       "X-BAPI-SIGN-TYPE": "2",
       "X-BAPI-SIGN": signature,
       "X-BAPI-API-KEY": apiKey,
       "X-BAPI-TIMESTAMP": timestamp,
       "X-BAPI-RECV-WINDOW": recvWindow.toString(),
-      "Content-Type" : "application/json; charset=utf-8"
+      "Content-Type": "application/json; charset=utf-8",
     },
   });
   const response = request.json();
