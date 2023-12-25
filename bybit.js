@@ -46,9 +46,7 @@ async function futuresOrder(
   action,
   quantity,
   price = 0,
-  marketType = "MARKET",
-  leverage = "25",
-  
+  marketType = "MARKET",  
   // timeInForce = "GTC"
 ) {
   try {
@@ -215,7 +213,7 @@ async function deleteAllFuturesOrder() {
   const sym = await getTickerPrice(symbol);
   console.log(sym);
 
-  const transaction = await futuresOrder(symbol, 25, "BUY", 20, 29000);
+  const transaction = await futuresOrder(symbol, "BUY",2,20000,"LIMIT");
   console.log(transaction);
 
   // const balance = await checkFuturesBalance();
