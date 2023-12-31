@@ -213,14 +213,14 @@ async function deleteAllFuturesOrder() {
   const sym = await getTickerPrice(symbol);
   console.log(sym);
 
-  const transaction = await futuresOrder(symbol, "BUY",2,20000,"LIMIT");
-  console.log(transaction);
+  // const transaction = await futuresOrder(symbol, "BUY",2,20000,"LIMIT");
+  // console.log(transaction);
 
   // const balance = await checkFuturesBalance();
   // console.log("Balance is:", balance);
 
-  // const openOrders = await getAllOpenFuturesOrders();
-  // console.log("OPen Orders: ", openOrders);
+  const openOrders = await getAllOpenFuturesOrders();
+  console.log("OPen Orders: ", openOrders);
 
   // const minOrdNotional = await getMiniumPerAsset(symbol); //Get minimum oder notional
 
